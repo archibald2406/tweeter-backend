@@ -15,6 +15,8 @@ export const toUserEntityDto = (data: UserEntity): UserEntityDto => {
   return userDto;
 };
 
-export const comparePasswords = async (userPassword: string, currentPassword: string) => {
-  return await bcrypt.compare(currentPassword, userPassword);
+export const comparePasswords = async (
+  userPassword: string, currentPassword: string
+): Promise<boolean> => {
+  return bcrypt.compare(currentPassword, userPassword);
 };

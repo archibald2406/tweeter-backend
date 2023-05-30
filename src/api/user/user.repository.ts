@@ -6,18 +6,19 @@ import { UserEntityDto } from './dto/user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PostgresErrorCode } from 'src/shared/enums/postgres-error-code.enum';
 import { FollowUserDto } from './dto/follow-user.dto';
+import { UserFollowersEntity } from './entities/user-followers.entity';
 
 @Injectable()
 export class UserRepository {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(UserFollowersEntity)
+    private readonly userFollowersRepository: Repository<UserFollowersEntity>,
   ) {}
 
   async getAll(): Promise<UserEntityDto[]> {
-    return this.userRepository.find({
-      relations: { followers: true, following: true },
-    });
+    return this.userRepository.find();
   }
 
   async getByUsername(username: string): Promise<UserEntity> {
@@ -27,6 +28,7 @@ export class UserRepository {
     return user;
   }
 
+  // TODO деструктуризация всех аргументов
   async create(createUserDto: CreateUserDto): Promise<UserEntity> {
     try {
       const user = this.userRepository.create(createUserDto);
@@ -43,7 +45,35 @@ export class UserRepository {
     }
   }
 
-  async followUser({ followerId, followingId }: FollowUserDto): Promise<boolean> {
-    return true;
+  async followUser({ followerId, followingId }: FollowUserDto): Promise<UserFollowersEntity> {
+    const follower = await this.userRepository.findOne({
+      where: { id: followerId },
+      relations: { following: true },
+    });
+
+    const following = await this.userRepository.findOne({
+      where: { id: followingId },
+      relations: { followers: true },
+    });
+
+    if (follower && following) {
+      try {
+        const res = await this.userFollowersRepository.save({
+          followerId,
+          followingId,
+        });
+        return res;
+      } catch (error) {
+        if (error.code === PostgresErrorCode.UNIQUE_VIOLATION) {
+          throw new ConflictException(
+            // TODO: use constants
+            'User is already following this user',
+          );
+        }
+        throw new BadRequestException('Follow user error');
+      }
+    } else {
+      throw new BadRequestException('No such follower or following exist');
+    }
   }
 }

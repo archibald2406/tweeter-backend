@@ -5,12 +5,11 @@ import {
   PrimaryGeneratedColumn,
   Column,
   OneToMany,
-  ManyToMany,
-  JoinTable,
   BeforeInsert,
   BeforeUpdate,
 } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
+import { UserFollowersEntity } from './user-followers.entity';
 
 @Entity('user')
 export class UserEntity {
@@ -35,13 +34,11 @@ export class UserEntity {
   @OneToMany(() => RecordLikeEntity, (recordLike) => recordLike.user)
   likes?: RecordLikeEntity[];
 
-  @ManyToMany(() => UserEntity, (user) => user.following)
-  @JoinTable()
-  following?: UserEntity[];
+  @OneToMany(() => UserFollowersEntity, (follower) => follower.follower)
+  followers?: UserFollowersEntity[];
 
-  @ManyToMany(() => UserEntity, (user) => user.followers)
-  @JoinTable()
-  followers?: UserEntity[];
+  @OneToMany(() => UserFollowersEntity, (following) => following.following)
+  following?: UserFollowersEntity[];
 
   @BeforeInsert()
   @BeforeUpdate()

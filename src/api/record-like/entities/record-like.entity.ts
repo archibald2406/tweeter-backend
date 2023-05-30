@@ -28,6 +28,6 @@ export class RecordLikeEntity {
   @ManyToOne(() => UserEntity, (user) => user.likes, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'cvId' })
+  @JoinColumn({ name: 'userId' })
   public user?: UserEntity;
 }

@@ -4,6 +4,7 @@ import { UserEntityDto } from './dto/user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { toUserEntityDto } from 'src/api/user/utils/user.util';
 import { FollowUserDto } from './dto/follow-user.dto';
+import { UserFollowersEntity } from './entities/user-followers.entity';
 
 @Injectable()
 export class UserService {
@@ -26,7 +27,7 @@ export class UserService {
     return toUserEntityDto(user);
   }
 
-  async followUser(followUserDto: FollowUserDto): Promise<boolean> {
-    return await this.userRepo.followUser(followUserDto);
+  async followUser(followUserDto: FollowUserDto): Promise<UserFollowersEntity> {
+    return this.userRepo.followUser(followUserDto);
   }
 }
