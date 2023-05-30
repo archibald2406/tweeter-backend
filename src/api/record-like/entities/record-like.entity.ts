@@ -6,9 +6,11 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  Unique,
 } from 'typeorm';
 
 @Entity('record-like')
+@Unique(['recordId', 'userId'])
 export class RecordLikeEntity {
   @PrimaryGeneratedColumn()
   public id!: number;
