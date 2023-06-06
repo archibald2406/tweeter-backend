@@ -2,8 +2,10 @@ import {
   Controller,
   Get,
   Inject,
+  UseGuards,
 } from '@nestjs/common';
 import { TwitterRecordService } from './twitter-record.service';
+import { AuthGuard } from '../auth/guards/auth.guard';
 
 @Controller('twitter-record')
 export class TwitterRecordController {
@@ -12,6 +14,7 @@ export class TwitterRecordController {
     private readonly twitterRecordService: TwitterRecordService,
   ) {}
 
+  @UseGuards(AuthGuard)
   @Get()
   findAll() {
     return this.twitterRecordService.findAll();

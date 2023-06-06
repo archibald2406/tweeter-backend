@@ -8,6 +8,7 @@ export enum EnvironmentVariableKeys {
     dbUser = 'DATABASE_USER',
     dbPassword = 'DATABASE_PASSWORD',
     dbPort = 'DATABASE_PORT',
+    jwtSecret = 'JWT_SECRET',
 }
 
 class EnvironmentVariables {
@@ -17,6 +18,7 @@ class EnvironmentVariables {
     @Expose() @IsString() [EnvironmentVariableKeys.dbUser]: string;
     @Expose() @IsString() [EnvironmentVariableKeys.dbPassword]: string;
     @Expose() @IsString() [EnvironmentVariableKeys.dbPort]: string;
+    @Expose() @IsString() [EnvironmentVariableKeys.jwtSecret]: string;
 }
 
 export function validate(config: Record<string, unknown>) {

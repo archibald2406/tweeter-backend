@@ -5,6 +5,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { toUserEntityDto } from 'src/api/user/utils/user.util';
 import { FollowUserDto } from './dto/follow-user.dto';
 import { UserFollowersEntity } from './entities/user-followers.entity';
+import { FindUserOptions } from './interface/find-user-options.interface';
+import { UserEntity } from './entities/user.entity';
 
 @Injectable()
 export class UserService {
@@ -12,6 +14,11 @@ export class UserService {
 
   async findAll(): Promise<UserEntityDto[]> {
     return this.userRepo.getAll();
+  }
+
+  async findgetByIdUserNameEmail(options: FindUserOptions): Promise<UserEntity> {
+    const user = await this.userRepo.getByIdUserNameEmail(options);
+    return user;
   }
 
   async create(UserEntityDto: CreateUserDto): Promise<UserEntityDto> {
@@ -29,5 +36,9 @@ export class UserService {
 
   async followUser(followUserDto: FollowUserDto): Promise<UserFollowersEntity> {
     return this.userRepo.followUser(followUserDto);
+  }
+
+  async findByPayload({ email }: any): Promise<UserEntity> {
+    return await this.findgetByIdUserNameEmail({ email });
   }
 }

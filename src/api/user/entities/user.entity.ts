@@ -5,10 +5,7 @@ import {
   PrimaryGeneratedColumn,
   Column,
   OneToMany,
-  BeforeInsert,
-  BeforeUpdate,
 } from 'typeorm';
-import * as bcrypt from 'bcryptjs';
 import { UserFollowersEntity } from './user-followers.entity';
 
 @Entity('user')
@@ -39,10 +36,4 @@ export class UserEntity {
 
   @OneToMany(() => UserFollowersEntity, (following) => following.following)
   following?: UserFollowersEntity[];
-
-  @BeforeInsert()
-  @BeforeUpdate()
-  async hashPassword() {
-    this.password = await bcrypt.hash(this.password, 10);
-  }
 }
